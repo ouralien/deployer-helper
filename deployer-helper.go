@@ -22,6 +22,7 @@ type deployerPayload struct {
 	ImageName        string `json:"imageName"`
 	ImageVersion     string `json:"imageVersion"`
 	WebhookToken     string `json:"webhookToken"`
+	ExtraVars        string `json:"extraVars"`
 }
 
 type deployerResponse struct {
@@ -40,6 +41,7 @@ type Config struct {
 	login     string
 	password  string
 	email     string
+	extraVars string
 }
 
 // Init is a func
@@ -62,6 +64,7 @@ func Deploy() {
 		ImageName:        config.service,
 		ImageVersion:     config.image,
 		WebhookToken:     config.token,
+		ExtraVars:        config.extraVars,
 	}
 
 	r := callService(payload)
@@ -147,6 +150,11 @@ func SetToken(value string) {
 // SetRepo is a func
 func SetRepo(value string) {
 	config.repo = value
+}
+
+// SetExtraVars is a func
+func SetExtraVars(value string) {
+	config.extraVars = value
 }
 
 // SetRegistry is a func
