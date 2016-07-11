@@ -52,9 +52,26 @@ func Init() {
 
 // Deploy is a func
 func Deploy() {
-	fmt.Println("Host:", config.service, config.host)
+	fmt.Println("Deploy to Host:", config.service, config.host)
 
-	payload := deployerPayload{
+	payload := createPayload()
+
+	r := callService(payload, "deploy")
+	responseHandler(r)
+}
+
+// Build is a func
+func Build() {
+	fmt.Println("Build on Host:", config.service, config.host)
+
+	payload := createPayload()
+
+	r := callService(payload, "build")
+	responseHandler(r)
+}
+
+func createPayload() deployerPayload {
+	return deployerPayload{
 		GitURL:           config.repo,
 		DeployKey:        config.deployKey,
 		Registry:         config.registry,
@@ -66,13 +83,10 @@ func Deploy() {
 		WebhookToken:     config.token,
 		ExtraVars:        config.extraVars,
 	}
-
-	r := callService(payload)
-	responseHandler(r)
 }
 
-func callService(payload deployerPayload) *http.Response {
-	serviceURL := fmt.Sprintf("https://%s/deploy", config.host)
+func callService(payload deployerPayload, method string) *http.Response {
+	serviceURL := fmt.Sprintf("https://%s/%s", config.host, method)
 	fmt.Printf("Calling Service : %v \n", serviceURL)
 	fmt.Printf("With payload : %v \n", payload)
 
